@@ -7,7 +7,7 @@ if __name__=="__main__":
 
 setup(
     name='hemato_tf_dataset',
-    version='1.1.3',
+    version='1.1.4',
     #scripts=['src/hemato_tf_dataset/'],
     packages=find_packages()
 )

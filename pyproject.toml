@@ -1,6 +1,6 @@
 [project]
 name = "hemato_tf_dataset"
-version = "1.1.3"
+version = "1.1.4"
 authors = [
   { name="Author", email="alimoeeny@gmail.com" },
 ]
