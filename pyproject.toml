@@ -1,0 +1,22 @@
+[project]
+name = "hemato.ai.hemato_tf_dataset"
+version = "1.1.1"
+authors = [
+  { name="Author", email="alimoeeny@gmail.com" },
+]
+description = "Primarily to be used in training keras models"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: Commercial",
+    "Operating System :: *nix",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/suprafrontal/hemato-tf-dataset"
+"Bug Tracker" = "https://github.com/suprafrontal/hemato-tf-dataset/issues"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
