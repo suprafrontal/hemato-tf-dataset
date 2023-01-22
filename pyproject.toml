@@ -1,6 +1,6 @@
 [project]
 name = "hemato_tf_dataset"
-version = "1.1.4"
+version = "1.1.5"
 authors = [
   { name="Author", email="alimoeeny@gmail.com" },
 ]
@@ -14,8 +14,8 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/suprafrontal/hemato-tf-dataset"
-"Bug Tracker" = "https://github.com/suprafrontal/hemato-tf-dataset/issues"
+"Homepage" = "https://github.com/suprafrontal/hemato_tf_dataset"
+"Bug Tracker" = "https://github.com/suprafrontal/hemato_tf_dataset/issues"
 
 [build-system]
 requires = ["setuptools>=61.0"]
