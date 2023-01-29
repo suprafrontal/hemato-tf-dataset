@@ -4,7 +4,6 @@ version = "1.2.2"
 description = ""
 authors = ["Ali Moeeny <alimoeeny@gmail.com>"]
 readme = "README.md"
-packages = [{include = "hemato_tf_dataset"}]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.12"
