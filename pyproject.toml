@@ -1,3 +1,26 @@
-[build-system]
+[OG.build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
+[tool.poetry]
+name = "hemato-tf-dataset"
+version = "1.2.1"
+description = ""
+authors = ["Ali Moeeny <alimoeeny@gmail.com>"]
+readme = "README.md"
+packages = [{include = "hemato_tf_dataset"}]
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.12"
+tensorflow-datasets = "^4.8.2"
+keras = "^2.11.0"
+tensorflow = "^2.11.0"
+pillow = "^9.4.0"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.2.1"
+black = {version = "^23.1a1", allow-prereleases = true}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
