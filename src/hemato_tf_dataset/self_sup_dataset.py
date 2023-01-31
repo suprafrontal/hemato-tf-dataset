@@ -69,6 +69,7 @@ class HemSelfSupDataset:
         cache_images_in_memory=False,
     ):
         self.file_extension = file_extension
+        self.index_map = []
         self.target_files = []
         self.root_dir = root_dir
         self.batch_size = batch_size
@@ -154,17 +155,22 @@ class HemSelfSupDataset:
             num_tokens=self.cat_stats.__len__(), output_mode="multi_hot"
         )
 
-        if shuffle:
-            random_indexes = numpy.random.permutation(len(self.target_files))
-            self.target_files = [
-                self.target_files[ri]
-                for ri in random_indexes[
-                    : max_count if max_count > 0 else len(self.target_files)
-                ]
-            ]
+        # if shuffle:
+        #     random_indexes = numpy.random.permutation(len(self.target_files))
+        #     self.target_files = [
+        #         self.target_files[ri]
+        #         for ri in random_indexes[
+        #             : max_count if max_count > 0 else len(self.target_files)
+        #         ]
+        #     ]
 
         if not shuffle and max_count > 0:
             self.target_files = self.target_files[0:max_count]
+
+        # let's make sure adjacent items are not all same picture or same agumentation
+        self.index_map = range(0, (len(self.augmentations) * len(self.target_files)))
+        if shuffle:
+            numpy.random.permutation(len(self.augmentations) * len(self.target_files))
 
         self.mem_cache = [None] * (len(self.augmentations) * len(self.target_files))
 
@@ -201,8 +207,10 @@ class HemSelfSupDataset:
             return r
 
         print(f">{index}<", end="")
-        aug_idx = index % len(self.augmentations)
-        file_idx = index // len(self.augmentations)
+        mapped_index = self.index_map[index]
+
+        aug_idx = mapped_index % len(self.augmentations)
+        file_idx = mapped_index // len(self.augmentations)
 
         trg_file = self.target_files[file_idx]
         identifier = ("/".join(trg_file.split("/")[-2:])).split(".")[0]
