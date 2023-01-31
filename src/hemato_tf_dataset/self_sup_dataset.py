@@ -170,7 +170,9 @@ class HemSelfSupDataset:
         # let's make sure adjacent items are not all same picture or same agumentation
         self.index_map = range(0, (len(self.augmentations) * len(self.target_files)))
         if shuffle:
-            numpy.random.permutation(len(self.augmentations) * len(self.target_files))
+            self.index_map = numpy.random.permutation(
+                len(self.augmentations) * len(self.target_files)
+            )
 
         self.mem_cache = [None] * (len(self.augmentations) * len(self.target_files))
 
