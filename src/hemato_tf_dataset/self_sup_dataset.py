@@ -1,3 +1,4 @@
+import copy
 import os
 import fnmatch
 from random import random, shuffle
@@ -218,6 +219,7 @@ class HemSelfSupDataset:
         identifier = ("/".join(trg_file.split("/")[-2:])).split(".")[0]
 
         img = Image.open(trg_file).convert("RGB")
+        og_img = copy.deepcopy(img)
 
         # if self.enhance_for_purpule_stuff:
         #     img = ImageOps.autocontrast(img)
@@ -312,6 +314,7 @@ class HemSelfSupDataset:
 
         item = {
             "img": img,
+            "og_img": og_img,
             "augmentations": self.augmentations[aug_idx],
             "identifier": f"{identifier}-{self.augmentations[aug_idx]}",
             "target_obj_file_path": trg_file,
