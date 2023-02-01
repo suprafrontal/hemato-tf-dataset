@@ -294,6 +294,7 @@ class HemSelfSupDataset:
             # img = tf.image.crop_and_resize([numpy.array(img)], [[0,0,self.image_width,self.image_width]], [0], [self.image_width, self.image_width], method=tf.image.ResizeMethod.BILINEAR)[0]
             # img = tf.image.per_image_standardization(img)
             img = numpy.array(img, dtype="float32")
+            og_img = numpy.array(og_img, dtype="float32")
 
         imw, imh, imc = img.shape
         if imw != self.image_width or imw != imh or imc != 3:
@@ -311,6 +312,7 @@ class HemSelfSupDataset:
 
         # normalize
         img *= 1.0 / img.max()
+        og_img *= 1.0 / og_img.max()
 
         item = {
             "img": img,
