@@ -20,30 +20,32 @@ def to_grayscale_then_rgb(image):
 AVAILABLE_AUGMENTATIONS = [
     "",
     "gray",
-    "rotate90",
-    "rotate180",
-    "fliphoriz",
-    "flipvert",
+    # "rotate90",
+    # "rotate180",
+    # "fliphoriz",
+    # "flipvert",
     "satur25",
     "satur125",
-    "fliphoriz-rotate90",
-    "flipvert-rotate90",
-    "fliphoriz-rotate90-gray",
-    "flipvert-rotate90-gray",
-    "fliphoriz-rotate180-gray",
-    "flipvert-rotate180-gray",
-    "gray-rotate90",
-    "gray-rotate180",
-    "gray-fliphoriz",
-    "gray-flipvert",
-    "fliphoriz-rotate90-satur25",
-    "flipvert-rotate90-satur25",
-    "satur25-rotate90",
-    "satur25-fliphoriz",
-    "fliphoriz-rotate90-satur125",
-    "flipvert-rotate90-satur125",
-    "satur125-rotate90",
-    "satur125-fliphoriz",
+    "pixel-pepper-15",
+    ######################
+    # "fliphoriz-rotate90",
+    # "flipvert-rotate90",
+    # "fliphoriz-rotate90-gray",
+    # "flipvert-rotate90-gray",
+    # "fliphoriz-rotate180-gray",
+    # "flipvert-rotate180-gray",
+    # "gray-rotate90",
+    # "gray-rotate180",
+    # "gray-fliphoriz",
+    # "gray-flipvert",
+    # "fliphoriz-rotate90-satur25",
+    # "flipvert-rotate90-satur25",
+    # "satur25-rotate90",
+    # "satur25-fliphoriz",
+    # "fliphoriz-rotate90-satur125",
+    # "flipvert-rotate90-satur125",
+    # "satur125-rotate90",
+    # "satur125-fliphoriz",
 ]
 
 
@@ -109,21 +111,15 @@ class HemSelfSupDataset:
                 else:
                     print(f"Exception happened here and we need to raise it : {e}")
                     raise (e)
-            if img.width != img.height and (
-                img.width < self.image_width or img.height < self.image_width
-            ):
-                print(
-                    f"DELETING Image {trg_file} has non-square dimensions {img.width} x {img.height}"
-                )
+            if img.width != img.height and (img.width < self.image_width or img.height < self.image_width):
+                print(f"DELETING Image {trg_file} has non-square dimensions {img.width} x {img.height}")
                 os.remove(trg_file)
                 self.target_files.remove(trg_file)
             elif img.width < self.image_width:
                 raise Exception(f"Image {trg_file} width is too small")
 
         self.cat_stats = {}
-        self.ordered_cats = (
-            []
-        )  # order matters for index lookup, so we are sorting alphabetically
+        self.ordered_cats = []  # order matters for index lookup, so we are sorting alphabetically
         for fname in self.file_categories:
             if len(self.file_categories[fname]) > 1:
                 offenders.append(fname)
@@ -136,25 +132,13 @@ class HemSelfSupDataset:
         self.ordered_cats = [x for x in self.cat_stats.keys()]
         self.ordered_cats.sort()
 
-        print(
-            "\x1b[1;31m ============================================================================================================== \x1b[0m"
-        )
-        print(
-            " =============================================================================================================="
-        )
+        print("\x1b[1;31m ============================================================================================================== \x1b[0m")
+        print(" ==============================================================================================================")
         print(f"    Category stats: {self.cat_stats}")
-        print(
-            " =============================================================================================================="
-        )
-        print(
-            "\x1b[1;31m ============================================================================================================== \x1b[0m"
-        )
-        self.one_hot_encoder = tf.keras.layers.CategoryEncoding(
-            num_tokens=self.cat_stats.__len__(), output_mode="one_hot"
-        )
-        self.multi_hot_encoder = tf.keras.layers.CategoryEncoding(
-            num_tokens=self.cat_stats.__len__(), output_mode="multi_hot"
-        )
+        print(" ==============================================================================================================")
+        print("\x1b[1;31m ============================================================================================================== \x1b[0m")
+        self.one_hot_encoder = tf.keras.layers.CategoryEncoding(num_tokens=self.cat_stats.__len__(), output_mode="one_hot")
+        self.multi_hot_encoder = tf.keras.layers.CategoryEncoding(num_tokens=self.cat_stats.__len__(), output_mode="multi_hot")
 
         # if shuffle:
         #     random_indexes = numpy.random.permutation(len(self.target_files))
@@ -171,9 +155,7 @@ class HemSelfSupDataset:
         # let's make sure adjacent items are not all same picture or same agumentation
         self.index_map = range(0, (len(self.augmentations) * len(self.target_files)))
         if shuffle:
-            self.index_map = numpy.random.permutation(
-                len(self.augmentations) * len(self.target_files)
-            )
+            self.index_map = numpy.random.permutation(len(self.augmentations) * len(self.target_files))
 
         self.mem_cache = [None] * (len(self.augmentations) * len(self.target_files))
 
@@ -181,9 +163,7 @@ class HemSelfSupDataset:
         return len(self.augmentations) * len(self.target_files)
 
     def get_batch(self, batch_index):
-        batch_indexes = range(
-            batch_index * self.batch_size, (batch_index + 1) * self.batch_size
-        )
+        batch_indexes = range(batch_index * self.batch_size, (batch_index + 1) * self.batch_size)
         items = []
 
         for index in batch_indexes:
@@ -261,6 +241,13 @@ class HemSelfSupDataset:
             if "satur125" in self.augmentations[aug_idx]:
                 converter = PIL.ImageEnhance.Color(img)
                 img = converter.enhance(1.25)
+            if "pixel-pepper-15":
+                np_img = numpy.array(img)
+                mask = numpy.random.rand(img.height, img.width) < 0.15
+                for index in numpy.ndindex(img.height - 1, img.width - 1):
+                    if mask[index] == True:
+                        np_img[index[0], index[1], :] = numpy.array((0, 0, 0), dtype="uint8")
+                img = Image.fromarray(np_img)
 
             side = min(img.width, img.height)
             img = img.crop((0, 0, side, side))
