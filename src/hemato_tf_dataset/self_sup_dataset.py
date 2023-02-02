@@ -188,6 +188,11 @@ class HemSelfSupDataset:
             for idx in index:
                 r.append(self.__getitem__(idx))
             return r
+        elif type(index) is tuple:
+            r = []
+            for idx in index:
+                r.append(self.__getitem__(idx))
+            return r
 
         print(f">{index}<", end="")
         mapped_index = self.index_map[index]
@@ -244,9 +249,9 @@ class HemSelfSupDataset:
             if "pixel-pepper-15":
                 np_img = numpy.array(img)
                 mask = numpy.random.rand(img.height, img.width) < 0.15
-                for index in numpy.ndindex(img.height - 1, img.width - 1):
-                    if mask[index] == True:
-                        np_img[index[0], index[1], :] = numpy.array((0, 0, 0), dtype="uint8")
+                for idx in numpy.ndindex(img.height - 1, img.width - 1):
+                    if mask[idx] == True:
+                        np_img[idx[0], idx[1], :] = numpy.array((0, 0, 0), dtype="uint8")
                 img = Image.fromarray(np_img)
 
             side = min(img.width, img.height)
