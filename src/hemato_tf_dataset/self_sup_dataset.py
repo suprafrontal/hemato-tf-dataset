@@ -246,7 +246,7 @@ class HemSelfSupDataset:
             if "satur125" in self.augmentations[aug_idx]:
                 converter = PIL.ImageEnhance.Color(img)
                 img = converter.enhance(1.25)
-            if "pixel-pepper-15":
+            if "pixel-pepper-15" in self.augmentations[aug_idx]:
                 np_img = numpy.array(img)
                 mask = numpy.random.rand(img.height, img.width) < 0.15
                 for idx in numpy.ndindex(img.height - 1, img.width - 1):
