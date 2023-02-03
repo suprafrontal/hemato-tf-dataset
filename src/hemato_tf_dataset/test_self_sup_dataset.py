@@ -24,3 +24,9 @@ def test_pixel_noise_15():
     ds = HemSelfSupDataset("tests/test_data", image_width=256, augmentations=["pixel-noise-15"])
     assert ds
     assert ds[0]
+
+
+def test_pixel_rainbow_50():
+    ds = HemSelfSupDataset("tests/test_data", image_width=256, augmentations=["pixel-noise-15"])
+    assert ds
+    assert ds[0]
