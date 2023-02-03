@@ -30,3 +30,13 @@ def test_pixel_rainbow_50():
     ds = HemSelfSupDataset("tests/test_data", image_width=256, augmentations=["pixel-noise-15"])
     assert ds
     assert ds[0]
+
+
+def test_max_count():
+    ds = HemSelfSupDataset("tests/test_data", image_width=256)
+    assert ds
+    assert ds.__len__() == 30
+
+    dsmax = HemSelfSupDataset("tests/test_data", image_width=256, max_count=1)
+    assert dsmax
+    assert dsmax.__len__() == 10

@@ -145,27 +145,21 @@ class HemSelfSupDataset:
         self.one_hot_encoder = tf.keras.layers.CategoryEncoding(num_tokens=self.cat_stats.__len__(), output_mode="one_hot")
         self.multi_hot_encoder = tf.keras.layers.CategoryEncoding(num_tokens=self.cat_stats.__len__(), output_mode="multi_hot")
 
-        # if shuffle:
-        #     random_indexes = numpy.random.permutation(len(self.target_files))
-        #     self.target_files = [
-        #         self.target_files[ri]
-        #         for ri in random_indexes[
-        #             : max_count if max_count > 0 else len(self.target_files)
-        #         ]
-        #     ]
-
         if not shuffle and max_count > 0:
             self.target_files = self.target_files[0:max_count]
 
+        if max_count < 1:
+            max_count = len(self.target_files)
+
         # let's make sure adjacent items are not all same picture or same agumentation
-        self.index_map = range(0, (len(self.augmentations) * len(self.target_files)))
+        self.index_map = range(0, (len(self.augmentations) * min(max_count, len(self.target_files))))
         if shuffle:
-            self.index_map = numpy.random.permutation(len(self.augmentations) * len(self.target_files))
+            self.index_map = numpy.random.permutation(len(self.augmentations) * min(max_count, len(self.target_files)))
 
         self.mem_cache = [None] * (len(self.augmentations) * len(self.target_files))
 
     def __len__(self):
-        return len(self.augmentations) * len(self.target_files)
+        return len(self.index_map)
 
     def get_batch(self, batch_index):
         batch_indexes = range(batch_index * self.batch_size, (batch_index + 1) * self.batch_size)
