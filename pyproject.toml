@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hemato-tf-dataset"
-version = "1.2.19"
+version = "1.2.20"
 description = ""
 authors = ["Ali Moeeny <alimoeeny@gmail.com>"]
 readme = "README.md"

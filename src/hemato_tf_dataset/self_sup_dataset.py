@@ -33,6 +33,9 @@ AVAILABLE_AUGMENTATIONS = [
     "pixel-rainbow-30",
     "pixel-rainbow-50",
     "square-black-patches-10-15px",
+    "square-black-patches-20-15px",
+    "square-rainbow-patches-10-15px",
+    "square-rainbow-patches-20-15px",
     ######################
     # "fliphoriz-rotate90",
     # "flipvert-rotate90",
@@ -248,7 +251,7 @@ class HemSelfSupDataset:
                 img = converter.enhance(1.25)
             if "pixel-pepper-" in self.augmentations[aug_idx] or "pixel-rainbow-" in self.augmentations[aug_idx]:
                 is_rainbow = "rainbow" in self.augmentations[aug_idx]
-                noise_amount = float(self.augmentations[aug_idx][13:]) / 100.0
+                noise_amount = abs(float(self.augmentations[aug_idx][13:]) / 100.0)  # ABS because pepper and rainbow have different lenght and - creeps in
                 np_img = numpy.array(img)
                 mask = numpy.random.rand(img.height, img.width) < noise_amount
                 for idx in numpy.ndindex(img.height - 1, img.width - 1):
@@ -257,21 +260,27 @@ class HemSelfSupDataset:
                             np_img[idx[0], idx[1], :] = numpy.array((randint(0, 255), randint(0, 255), randint(0, 255)), dtype="uint8")
                         else:  # just pepper
                             np_img[idx[0], idx[1], :] = numpy.array((0, 0, 0), dtype="uint8")
+                    else:
+                        pass
                 img = Image.fromarray(np_img)
-            if "square-black-patches-10-15px" in self.augmentations[aug_idx]:
+            if "square-black-patches-" in self.augmentations[aug_idx] or "square-rainbow-patches-" in self.augmentations[aug_idx]:
                 is_rainbow = "rainbow" in self.augmentations[aug_idx]
+                patch_count = int(self.augmentations[aug_idx].split("-")[-2])
+                patch_side = int(self.augmentations[aug_idx].split("-")[-1][:-2])
                 np_img = numpy.array(img)
                 mask = numpy.zeros((img.height, img.width))
-                for _ in range(0, 10):
-                    px = randint(0, 255 - 15)
-                    py = randint(0, 255 - 15)
-                    mask[py : py + 15, px : px + 15] = 1
+                for _ in range(0, patch_count):
+                    px = randint(0, 255 - patch_side)
+                    py = randint(0, 255 - patch_side)
+                    mask[py : py + patch_side, px : px + patch_side] = 1
                 for idx in numpy.ndindex(img.height - 1, img.width - 1):
                     if mask[idx] == True:
                         if is_rainbow:
                             np_img[idx[0], idx[1], :] = numpy.array((randint(0, 255), randint(0, 255), randint(0, 255)), dtype="uint8")
                         else:  # just pepper
                             np_img[idx[0], idx[1], :] = numpy.array((0, 0, 0), dtype="uint8")
+                    else:
+                        pass
                 img = Image.fromarray(np_img)
 
             side = min(img.width, img.height)

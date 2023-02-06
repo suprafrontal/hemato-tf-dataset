@@ -27,7 +27,7 @@ def test_pixel_noise_15():
 
 
 def test_pixel_rainbow_50():
-    ds = HemSelfSupDataset("tests/test_data", image_width=256, augmentations=["pixel-noise-15"])
+    ds = HemSelfSupDataset("tests/test_data", image_width=256, augmentations=["pixel-rainbow-50"])
     assert ds
     assert ds[0]
 
@@ -35,14 +35,20 @@ def test_pixel_rainbow_50():
 def test_max_count():
     ds = HemSelfSupDataset("tests/test_data", image_width=256)
     assert ds
-    assert ds.__len__() == 33
+    assert ds.__len__() == 42
 
     dsmax = HemSelfSupDataset("tests/test_data", image_width=256, max_count=1)
     assert dsmax
-    assert dsmax.__len__() == 11
+    assert dsmax.__len__() == 14
 
 
-def test_square_patches():
-    ds = HemSelfSupDataset("tests/test_data", image_width=256, augmentations=["square-black-patches-10-10px"])
+def test_square_black_patches():
+    ds = HemSelfSupDataset("tests/test_data", image_width=256, augmentations=["square-black-patches-10-15px"])
+    assert ds
+    assert ds[0]
+
+
+def test_square_rainbow_patches():
+    ds = HemSelfSupDataset("tests/test_data", image_width=256, augmentations=["square-rainbow-patches-13-25px"])
     assert ds
     assert ds[0]
