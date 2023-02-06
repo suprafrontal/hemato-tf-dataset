@@ -1,4 +1,6 @@
 # import tomllib wait until python 3.11
+import numpy as np
+import numpy.typing as npt
 
 
 def version():
@@ -19,3 +21,16 @@ VERSION = version()
 class Dataset:
     def version(self):
         return VERSION
+
+
+def image_distances(a: npt.ArrayLike, b: npt.ArrayLike):
+    """ "
+    a and b are arrays of RGB images
+    """
+    a = np.array(a)
+    b = np.array(b)
+    # absolute_delta = np.sum(np.sum(np.sum([abs(a[i] - b[i]) for i in range(len(a))], axis=3), axis=2), axis=1)
+    absolute_deltas = [np.sum(abs(b[i] - a[i])) for i in range(len(a))]
+    white_image = np.ones(a[0].shape)
+    max_possible_delta = np.sum(white_image)
+    return absolute_deltas / max_possible_delta
