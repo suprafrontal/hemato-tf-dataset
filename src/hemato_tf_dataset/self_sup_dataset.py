@@ -62,6 +62,7 @@ class HemSelfSupDataset:
         file_extension="jpg",
         augmentations=AVAILABLE_AUGMENTATIONS,
         cache_images_in_memory=False,
+        verbose=True,
     ):
         self.file_extension = file_extension
         self.index_map = []
@@ -73,6 +74,7 @@ class HemSelfSupDataset:
         self.augmentations = augmentations
         self.enhance_for_purpule_stuff = False
         self.cache_images_in_memory = cache_images_in_memory
+        self.verbose = verbose
 
         for root, _, filenames in os.walk(self.root_dir):
             for filename in fnmatch.filter(filenames, f"*.{self.file_extension}"):
@@ -180,7 +182,8 @@ class HemSelfSupDataset:
                 r.append(self.__getitem__(idx))
             return r
 
-        print(f">{index}<", end="")
+        if self.verbose:
+            print(f">{index}<", end="")
         mapped_index = self.index_map[index]
 
         aug_idx = mapped_index % len(self.augmentations)
