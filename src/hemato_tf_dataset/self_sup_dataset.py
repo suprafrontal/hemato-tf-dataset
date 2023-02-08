@@ -1,6 +1,7 @@
 import copy
 import os
 import fnmatch
+import math
 from random import random, randint
 import tensorflow as tf
 import numpy
@@ -20,10 +21,6 @@ def to_grayscale_then_rgb(image):
 AVAILABLE_AUGMENTATIONS = [
     "",
     "gray",
-    # "rotate90",
-    # "rotate180",
-    # "fliphoriz",
-    # "flipvert",
     "satur25",
     "satur125",
     "pixel-pepper-15",
@@ -36,25 +33,11 @@ AVAILABLE_AUGMENTATIONS = [
     "square-black-patches-20-15px",
     "square-rainbow-patches-10-15px",
     "square-rainbow-patches-20-15px",
+    "shuffle-4x4",
     ######################
     # "fliphoriz-rotate90",
     # "flipvert-rotate90",
     # "fliphoriz-rotate90-gray",
-    # "flipvert-rotate90-gray",
-    # "fliphoriz-rotate180-gray",
-    # "flipvert-rotate180-gray",
-    # "gray-rotate90",
-    # "gray-rotate180",
-    # "gray-fliphoriz",
-    # "gray-flipvert",
-    # "fliphoriz-rotate90-satur25",
-    # "flipvert-rotate90-satur25",
-    # "satur25-rotate90",
-    # "satur25-fliphoriz",
-    # "fliphoriz-rotate90-satur125",
-    # "flipvert-rotate90-satur125",
-    # "satur125-rotate90",
-    # "satur125-fliphoriz",
 ]
 
 
@@ -282,7 +265,38 @@ class HemSelfSupDataset:
                     else:
                         pass
                 img = Image.fromarray(np_img)
+            if "shuffle-4x4":
+                np_img = numpy.array(img)
+                new_img = numpy.zeros(np_img.shape)
+                (wimg, himg, _) = np_img.shape
+                wimg = int(wimg / 4)
+                himg = int(himg / 4)
+                # print(f"{new_img.shape} - {np_img.shape} - {wimg} {himg}")
+                new_square_locations = numpy.random.permutation(16)  # 4x4
 
+                for idx, loc in enumerate(new_square_locations):
+                    # a = [(loc / 4) * wimg: (loc / 4) * (wimg+1), (loc % 4) * himg:(loc %4 ) * (himg +1)]
+                    # b = [(idx / 4) * wimg: (idx / 4) * (wimg+1), (idx % 4) * himg:(idx %4 ) * (himg +1)]
+                    # print(
+                    #     f"""\n{idx} -> {loc} |
+                    #     {int(math.floor(loc / 4) * wimg)} : {int((math.floor(loc / 4) + 1) * wimg)}, {int(math.floor(loc % 4) * himg)} : {int((math.floor(loc % 4) + 1) * himg)} ||||||
+                    #     {int(math.floor(idx / 4) * wimg)} : {int((math.floor(idx / 4) + 1) * wimg)}, {int(math.floor(idx % 4) * himg)} : {int((math.floor(idx % 4) + 1) * himg)}"""
+                    # )
+                    # print(
+                    #     f"{int((loc / 4) * wimg) - int((loc / 4 + 1) * wimg)} {int((loc % 4) * himg) - int((loc % 4 + 1) * himg)} {int((idx / 4) * wimg) - int((idx / 4 + 1) * wimg)} {int((idx % 4) * himg) - int((idx % 4 + 1) * himg)}"
+                    # )
+                    new_img[
+                        int(math.floor(loc / 4) * wimg) : int(min(wimg * 4, (math.floor(loc / 4) + 1) * wimg)),
+                        int(math.floor(loc % 4) * himg) : int(min(himg * 4, (math.floor(loc % 4) + 1) * himg)),
+                        :,
+                    ] = np_img[
+                        int(math.floor(idx / 4) * wimg) : int(min(wimg * 4, (math.floor(idx / 4) + 1) * wimg)),
+                        int(math.floor(idx % 4) * himg) : int(min(himg * 4, (math.floor(idx % 4) + 1) * himg)),
+                        :,
+                    ]
+                img = Image.fromarray(new_img.astype("uint8"))
+
+            #################################################################################################################################################################################
             side = min(img.width, img.height)
             img = img.crop((0, 0, side, side))
 
