@@ -2,6 +2,7 @@ import copy
 import os
 import fnmatch
 import math
+import time
 from random import random, randint
 import tensorflow as tf
 import numpy
@@ -10,6 +11,13 @@ import PIL
 from PIL import ImageOps
 
 # import cv2
+
+
+def deltaT(t1: float, msg: str) -> float:
+    delta = time.time() - t1
+    t1 = time.time()
+    print(f"\n\x1B[32m ∆ {msg} {delta:0.3f}sec \x1b[0m\n")
+    return t1
 
 
 def to_grayscale_then_rgb(image):
@@ -151,35 +159,46 @@ class HemSelfSupDataset:
         return len(self.index_map)
 
     def get_batch(self, batch_index):
+        t1 = time.time()
         batch_indexes = range(batch_index * self.batch_size, (batch_index + 1) * self.batch_size)
         items = []
 
         for index in batch_indexes:
             items.append(self[index])
-
+        if self.verbose:
+            deltaT(t1, "GB")
         return items
 
     def __getitem__(self, index):
+        t1 = time.time()
         if type(index) is int:
             ## ------ MEM CACHE
             index = index % self.__len__()
         if self.mem_cache[index]:
+            if self.verbose:
+                deltaT(t1, "GIc")
             return self.mem_cache[index]
         ## ----- END MEM CACHE
         elif type(index) is slice:
             r = []
             for idx in range(index.start, index.stop or len(self), index.step or 1):
                 r.append(self.__getitem__(idx))
+            if self.verbose:
+                deltaT(t1, "GIc")
             return r
         elif type(index) is list:
             r = []
             for idx in index:
                 r.append(self.__getitem__(idx))
+            if self.verbose:
+                deltaT(t1, "GIc")
             return r
         elif type(index) is tuple:
             r = []
             for idx in index:
                 r.append(self.__getitem__(idx))
+            if self.verbose:
+                deltaT(t1, "GIc")
             return r
 
         if self.verbose:
@@ -268,7 +287,7 @@ class HemSelfSupDataset:
                     else:
                         pass
                 img = Image.fromarray(np_img)
-            if "shuffle-4x4":
+            if "shuffle-4x4" in self.augmentations[aug_idx]:
                 np_img = numpy.array(img)
                 new_img = numpy.zeros(np_img.shape)
                 (wimg, himg, _) = np_img.shape
@@ -362,5 +381,8 @@ class HemSelfSupDataset:
 
         if self.cache_images_in_memory:
             self.mem_cache[index] = item
+
+        if self.verbose:
+            deltaT(t1, "GI")
 
         return item
