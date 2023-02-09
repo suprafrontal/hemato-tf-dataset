@@ -42,6 +42,10 @@ AVAILABLE_AUGMENTATIONS = [
     "square-rainbow-patches-10-15px",
     "square-rainbow-patches-20-15px",
     "shuffle-4x4",
+    "upscale-2/3-bicubic",
+    "upscale-2/3-box",
+    "upscale-1/2-box",
+    "upscale-1/5-box",
     ######################
     # "fliphoriz-rotate90",
     # "flipvert-rotate90",
@@ -317,7 +321,22 @@ class HemSelfSupDataset:
                         :,
                     ]
                 img = Image.fromarray(new_img.astype("uint8"))
-
+            if "upscale-2/3-bicubic" in self.augmentations[aug_idx]:
+                new_img = img.resize((int(img.size[0] * 2 / 3), int(img.size[1] * 2 / 3)))
+                new_img = new_img.resize((img.size[0], img.size[1]), resample=Image.BICUBIC)
+                img = new_img
+            if "upscale-2/3-box" in self.augmentations[aug_idx]:
+                new_img = img.resize((int(img.size[0] * 2 / 3), int(img.size[1] * 2 / 3)))
+                new_img = new_img.resize((img.size[0], img.size[1]), resample=Image.BOX)
+                img = new_img
+            if "upscale-1/2-box" in self.augmentations[aug_idx]:
+                new_img = img.resize((int(img.size[0] * 1 / 2), int(img.size[1] * 1 / 2)))
+                new_img = new_img.resize((img.size[0], img.size[1]), resample=Image.BOX)
+                img = new_img
+            if "upscale-1/5-box" in self.augmentations[aug_idx]:
+                new_img = img.resize((int(img.size[0] * 1 / 5), int(img.size[1] * 1 / 5)))
+                new_img = new_img.resize((img.size[0], img.size[1]), resample=Image.BOX)
+                img = new_img
             #################################################################################################################################################################################
             side = min(img.width, img.height)
             img = img.crop((0, 0, side, side))
