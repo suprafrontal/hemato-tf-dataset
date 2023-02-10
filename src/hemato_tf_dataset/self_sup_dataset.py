@@ -29,6 +29,7 @@ def to_grayscale_then_rgb(image):
 AVAILABLE_AUGMENTATIONS = [
     "",
     "gray",
+    "invert",
     "satur25",
     "satur125",
     "pixel-pepper-15",
@@ -244,6 +245,8 @@ class HemSelfSupDataset:
             if "gray" in self.augmentations[aug_idx]:
                 converter = PIL.ImageEnhance.Color(img)
                 img = converter.enhance(0.0)
+            if "invert" in self.augmentations[aug_idx]:
+                img = PIL.ImageOps.invert(img)
             if "rotate90" in self.augmentations[aug_idx]:
                 img = img.rotate(90)
             if "rotate180" in self.augmentations[aug_idx]:
