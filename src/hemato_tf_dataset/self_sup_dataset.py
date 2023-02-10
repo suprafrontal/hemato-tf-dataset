@@ -84,7 +84,7 @@ class HemSelfSupDataset:
         self.image_width = image_width
         self.inspection_path = inspection_path
         self.augmentations = augmentations
-        self.enhance_for_purpule_stuff = False
+        # self.enhance_for_purpule_stuff = False
         self.cache_images_in_memory = cache_images_in_memory
         self.verbose = verbose
 
