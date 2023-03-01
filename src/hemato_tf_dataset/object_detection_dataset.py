@@ -37,12 +37,12 @@ AVAILABLE_AUGMENTATIONS = [
 ]
 
 
-class RBCDiameterDataGen(tf.keras.utils.Sequence):
+class CellDetectionDataset:
     def __init__(
         self,
         root_dir,
+        path_to_expected_answers_json,
         image_width,
-        yscale_factor,  # this should be set to image side
         batch_size=32,
         shuffle=True,
         max_count=0,
@@ -53,6 +53,7 @@ class RBCDiameterDataGen(tf.keras.utils.Sequence):
         verbose=True,
         # input_size=(256, 256, 3),
         exclusion_list_of_file_paths=[],
+        yscale_factor=0,
     ):
         self.root_dir = root_dir
         self.target_files = []
@@ -71,7 +72,7 @@ class RBCDiameterDataGen(tf.keras.utils.Sequence):
                 self.target_files.append(os.path.join(root, filename))
 
         self.expected_answers = {}
-        with open(f"{root_dir}/expected_answers.json") as f:
+        with open(path_to_expected_answers_json) as f:
             self.expected_answers = json.load(f)
 
         # Exclusions
@@ -79,10 +80,7 @@ class RBCDiameterDataGen(tf.keras.utils.Sequence):
         for exs in exclusion_list_of_file_paths:
             if exs in self.target_files or self.expected_answers.get(exs.split("/")[1]):
                 self.target_files.remove(exs)
-                idx = exs
-                if "/" in idx:
-                    idx = idx.split("/")[-1]
-                self.expected_answers.pop(idx)
+                self.expected_answers.pop(os.path.basename(exs))
                 exclusion_counter += 1
 
         if exclusion_counter:
@@ -133,18 +131,13 @@ class RBCDiameterDataGen(tf.keras.utils.Sequence):
         return image_arr / 255.0
 
     def __get_output(self, path):
-        idx = path
-        if "/" in idx:
-            idx = idx.split("/")[-1]
-        return self.expected_answers.get(idx)
+        return self.expected_answers.get(os.path.basename(path))
 
     def __get_data(self, batches):
         # Generates data containing batch_size samples
 
         X_batch = np.asarray([self.__get_input(x, self.image_width) for x in batches])
-
-        y0_batch = np.asarray([self.__get_output(y) for y in batches])
-        y0_batch = y0_batch / self.yscale_factor
+        y0_batch = [np.asarray(self.__get_output(y)) / self.yscale_factor for y in batches]
 
         return X_batch, y0_batch
 
