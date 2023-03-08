@@ -5,11 +5,11 @@ from hemato_tf_dataset import CellDetectionDataset
 def test_CellDetectionDataset():
     ds = CellDetectionDataset("tests/test_cell_location_data", "tests/test_cell_location_data/expected_answers.json", image_width=256, augmentations=[""])
     assert ds is not None
-    assert ds.__len__() == 0  # batch
+    assert ds.__len__() == 4
     x1 = ds.get_batch(0)
     assert len(x1) == ds.batch_size
     item = ds[0]
-    assert numpy.max(item[0]) == 1.0
+    assert numpy.max(item["img"]) == 1.0
 
 
 # def test_batch_get():
