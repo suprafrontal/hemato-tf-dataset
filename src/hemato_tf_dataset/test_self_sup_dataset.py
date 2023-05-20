@@ -1,4 +1,5 @@
 import numpy
+import math
 from hemato_tf_dataset import HemSelfSupDataset
 
 
@@ -9,7 +10,7 @@ def test_HemSelfSupDataset():
     x1 = ds.get_batch(0)
     assert len(x1) == ds.batch_size
     item = ds[0]
-    assert numpy.max(item["img"]) == 1.0
+    assert math.isclose(numpy.max(item["img"]) , 1.0)
 
 
 def test_batch_get():
@@ -35,11 +36,11 @@ def test_pixel_rainbow_50():
 def test_max_count():
     ds = HemSelfSupDataset("tests/test_data", image_width=256)
     assert ds
-    assert ds.__len__() == 60
+    assert ds.__len__() == 72
 
     dsmax = HemSelfSupDataset("tests/test_data", image_width=256, max_count=1)
     assert dsmax
-    assert dsmax.__len__() == 20
+    assert dsmax.__len__() == 24
 
 
 def test_square_black_patches():

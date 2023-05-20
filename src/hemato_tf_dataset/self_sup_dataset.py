@@ -9,6 +9,9 @@ import numpy
 from PIL import Image
 import PIL
 from PIL import ImageOps
+from PIL import ImageFile
+from PIL import ImageFilter
+
 from .utils import deltaT
 
 # import cv2
@@ -32,6 +35,12 @@ AVAILABLE_AUGMENTATIONS = [
     "pixel-rainbow-15",
     "pixel-rainbow-30",
     "pixel-rainbow-50",
+
+    "gaussian-blur-1",
+    "motion-blur-1",
+    "smudge-1",
+    "emboss",
+
     "square-black-patches-10-15px",
     "square-black-patches-20-15px",
     "square-rainbow-patches-10-15px",
@@ -70,6 +79,7 @@ class HemSelfSupDataset:
         augmentations=AVAILABLE_AUGMENTATIONS,
         cache_images_in_memory=False,
         verbose=True,
+        ignore_truncated_image_errors=True,
     ):
         self.file_extension = file_extension
         self.index_map = []
@@ -82,6 +92,9 @@ class HemSelfSupDataset:
         # self.enhance_for_purpule_stuff = False
         self.cache_images_in_memory = cache_images_in_memory
         self.verbose = verbose
+
+        if ignore_truncated_image_errors:
+            ImageFile.LOAD_TRUNCATED_IMAGES = True
 
         for root, _, filenames in os.walk(self.root_dir):
             for filename in fnmatch.filter(filenames, f"*.{self.file_extension}"):
@@ -334,6 +347,18 @@ class HemSelfSupDataset:
                 new_img = img.resize((int(img.size[0] * 1 / 5), int(img.size[1] * 1 / 5)))
                 new_img = new_img.resize((img.size[0], img.size[1]), resample=Image.BOX)
                 img = new_img
+
+            if "gaussian-blur-" in self.augmentations[aug_idx]:
+                sigma = float(self.augmentations[aug_idx].split("-")[-1])
+                img = img.filter(ImageFilter.GaussianBlur(radius=sigma))
+            if "motion-blur-" in self.augmentations[aug_idx]:
+                sigma = float(self.augmentations[aug_idx].split("-")[-1])
+                img = img.filter(ImageFilter.MotionBlur(radius=sigma))
+            if "smudge-1" in self.augmentations[aug_idx]:
+                img = img.filter(ImageFilter.SMOOTH_MORE)
+            if "emboss" in self.augmentations[aug_idx]:
+                img = img.filter(ImageFilter.EMBOSS)
+
             #################################################################################################################################################################################
             side = min(img.width, img.height)
             img = img.crop((0, 0, side, side))
