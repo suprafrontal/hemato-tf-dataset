@@ -37,7 +37,7 @@ AVAILABLE_AUGMENTATIONS = [
     "pixel-rainbow-50",
 
     "gaussian-blur-1",
-    "motion-blur-1",
+    "find-edges-1",
     "smudge-1",
     "emboss",
 
@@ -351,9 +351,8 @@ class HemSelfSupDataset:
             if "gaussian-blur-" in self.augmentations[aug_idx]:
                 sigma = float(self.augmentations[aug_idx].split("-")[-1])
                 img = img.filter(ImageFilter.GaussianBlur(radius=sigma))
-            if "motion-blur-" in self.augmentations[aug_idx]:
-                sigma = float(self.augmentations[aug_idx].split("-")[-1])
-                img = img.filter(ImageFilter.MotionBlur(radius=sigma))
+            if "find-edges" in self.augmentations[aug_idx]:
+                img = img.filter(ImageFilter.FIND_EDGES)
             if "smudge-1" in self.augmentations[aug_idx]:
                 img = img.filter(ImageFilter.SMOOTH_MORE)
             if "emboss" in self.augmentations[aug_idx]:
