@@ -10,9 +10,9 @@ import time
 
 import PIL
 from PIL import Image
-from PIL import ImageOps
+from PIL import ImageOps, ImageFilter
 
-from .utils import deltaT
+from .utils import deltaT, translate_wrap
 
 AVAILABLE_AUGMENTATIONS = [
     "",
@@ -29,6 +29,16 @@ AVAILABLE_AUGMENTATIONS = [
     "square-black-patches-20-15px",
     "square-rainbow-patches-10-15px",
     "square-rainbow-patches-20-15px",
+
+    "curtains-25",
+    "curtains-50",
+    "curtains-75",
+
+    "gaussian-blur-1",
+    "find-edges-1",
+    "smudge-1",
+    "emboss",
+
     ######################
     # "fliphoriz-rotate90",
     # "flipvert-rotate90",
@@ -345,6 +355,21 @@ class CellDetectionDataset:
                 new_img = img.resize((int(img.size[0] * 1 / 5), int(img.size[1] * 1 / 5)))
                 new_img = new_img.resize((img.size[0], img.size[1]), resample=Image.BOX)
                 img = new_img
+
+            if "gaussian-blur-" in self.augmentations[aug_idx]:
+                sigma = float(self.augmentations[aug_idx].split("-")[-1])
+                img = img.filter(ImageFilter.GaussianBlur(radius=sigma))
+            if "find-edges" in self.augmentations[aug_idx]:
+                img = img.filter(ImageFilter.FIND_EDGES)
+            if "smudge-1" in self.augmentations[aug_idx]:
+                img = img.filter(ImageFilter.SMOOTH_MORE)
+            if "emboss" in self.augmentations[aug_idx]:
+                img = img.filter(ImageFilter.EMBOSS)
+            if "curtain" in self.augmentations[aug_idx]:
+                shift = float(self.augmentations[aug_idx].split("-")[-1])
+                w, _ = img.size
+                shift = int(w * shift / 100)
+                img = translate_wrap(img, shift, shift)
             #################################################################################################################################################################################
             side = min(img.width, img.height)
             img = img.crop((0, 0, side, side))

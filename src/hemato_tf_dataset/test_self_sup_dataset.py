@@ -36,11 +36,11 @@ def test_pixel_rainbow_50():
 def test_max_count():
     ds = HemSelfSupDataset("tests/test_data", image_width=256)
     assert ds
-    assert ds.__len__() == 72
+    assert ds.__len__() == 81
 
     dsmax = HemSelfSupDataset("tests/test_data", image_width=256, max_count=1)
     assert dsmax
-    assert dsmax.__len__() == 24
+    assert dsmax.__len__() == 27
 
 
 def test_square_black_patches():
@@ -69,5 +69,16 @@ def test_shuffle_4x4():
 
 def test_invert():
     ds = HemSelfSupDataset("tests/test_data", image_width=256, augmentations=["invert"])
+    assert ds
+    assert ds[0]
+
+def test_curtain():
+    ds = HemSelfSupDataset("tests/test_data", image_width=256, augmentations=["curtain-25"])
+    assert ds
+    assert ds[0]
+    ds = HemSelfSupDataset("tests/test_data", image_width=256, augmentations=["curtain-50"])
+    assert ds
+    assert ds[0]
+    ds = HemSelfSupDataset("tests/test_data", image_width=256, augmentations=["curtain-75"])
     assert ds
     assert ds[0]

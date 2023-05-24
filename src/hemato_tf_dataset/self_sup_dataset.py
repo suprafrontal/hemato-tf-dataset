@@ -12,7 +12,7 @@ from PIL import ImageOps
 from PIL import ImageFile
 from PIL import ImageFilter
 
-from .utils import deltaT
+from .utils import deltaT, translate_wrap
 
 # import cv2
 
@@ -35,6 +35,10 @@ AVAILABLE_AUGMENTATIONS = [
     "pixel-rainbow-15",
     "pixel-rainbow-30",
     "pixel-rainbow-50",
+
+    "curtains-25",
+    "curtains-50",
+    "curtains-75",
 
     "gaussian-blur-1",
     "find-edges-1",
@@ -357,6 +361,11 @@ class HemSelfSupDataset:
                 img = img.filter(ImageFilter.SMOOTH_MORE)
             if "emboss" in self.augmentations[aug_idx]:
                 img = img.filter(ImageFilter.EMBOSS)
+            if "curtain" in self.augmentations[aug_idx]:
+                shift = float(self.augmentations[aug_idx].split("-")[-1])
+                w, _ = img.size
+                shift = int(w * shift / 100)
+                img = translate_wrap(img, shift, shift)
 
             #################################################################################################################################################################################
             side = min(img.width, img.height)

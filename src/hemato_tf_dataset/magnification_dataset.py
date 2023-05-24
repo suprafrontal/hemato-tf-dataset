@@ -30,6 +30,16 @@ AVAILABLE_AUGMENTATIONS = [
     "upscale-2/3-box",
     "upscale-1/2-box",
     "upscale-1/5-box",
+
+    "curtains-25",
+    "curtains-50",
+    "curtains-75",
+
+    "gaussian-blur-1",
+    "find-edges-1",
+    "smudge-1",
+    "emboss",
+
     ######################
     # "fliphoriz-rotate90",
     # "flipvert-rotate90",
