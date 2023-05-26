@@ -79,13 +79,13 @@ class HemBinaryClassificationDataset:
         shuffle=True,
         max_count=0,
         inspection_path="",
-        file_extension="jpg",
+        file_extensions=["jpg", "jpeg", "png"],
         augmentations=AVAILABLE_AUGMENTATIONS,
         cache_images_in_memory=False,
         verbose=True,
         ignore_truncated_image_errors=True,
     ):
-        self.file_extension = file_extension
+        self.file_extensions = file_extensions
         self.index_map = []
         self.target_files = []
         self.root_dir = root_dir
@@ -101,8 +101,9 @@ class HemBinaryClassificationDataset:
             ImageFile.LOAD_TRUNCATED_IMAGES = True
 
         for root, _, filenames in os.walk(self.root_dir):
-            for filename in fnmatch.filter(filenames, f"*.{self.file_extension}"):
-                self.target_files.append(os.path.join(root, filename))
+            for extension in self.file_extensions:
+                for filename in fnmatch.filter(filenames, f"*.{extension}"):
+                    self.target_files.append(os.path.join(root, filename))
 
         count_before = self.target_files.__len__()
         self.file_categories = {}
@@ -407,14 +408,14 @@ class HemBinaryClassificationDataset:
             img = img[0 : self.image_width, 0 : self.image_width, 0:3]
 
         # single_category = int(os.path.dirname(trg_file).split('/')[-1])
-        # single_category = os.path.dirname(trg_file).split("/")[-1]
-        # category_index = self.ordered_cats.index(single_category)
-        # fname = os.path.basename(trg_file)
-        # multi_category = self.file_categories[fname]
+        single_category = os.path.dirname(trg_file).split("/")[-1]
+        category_index = self.ordered_cats.index(single_category)
+        fname = os.path.basename(trg_file)
+        multi_category = self.file_categories[fname]
         # if self.multi_label:
         #     hot_one = self.multi_hot_encoder([int(ml) for ml in multi_category])
         # else:
-        #     hot_one = self.one_hot_encoder(category_index)
+        hot_one = self.one_hot_encoder(category_index)
 
         # normalize
         img *= 1.0 / img.max()
@@ -425,6 +426,8 @@ class HemBinaryClassificationDataset:
             "img_tensor": tf.convert_to_tensor(img),
             "og_img": og_img,
             "augmentations": self.augmentations[aug_idx],
+            'zero_v_one': category_index,
+            'hot_one': hot_one,
             "identifier": f"{identifier}-{self.augmentations[aug_idx]}",
             "target_obj_file_path": trg_file,
         }

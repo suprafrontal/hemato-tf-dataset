@@ -1,3 +1,4 @@
+import math
 import numpy
 from hemato_tf_dataset import CellDetectionDataset
 
@@ -9,7 +10,7 @@ def test_CellDetectionDataset():
     x1 = ds.get_batch(0)
     assert len(x1) == ds.batch_size
     item = ds[0]
-    assert numpy.max(item["img"]) == 1.0
+    assert math.isclose(numpy.max(item["img"]), 1.0)
 
 
 # def test_batch_get():

@@ -79,13 +79,13 @@ class HemSelfSupDataset:
         shuffle=True,
         max_count=0,
         inspection_path="",
-        file_extension="jpg",
+        file_extensions=["jpg", "jpeg", "png"],
         augmentations=AVAILABLE_AUGMENTATIONS,
         cache_images_in_memory=False,
         verbose=True,
         ignore_truncated_image_errors=True,
     ):
-        self.file_extension = file_extension
+        self.file_extensions = file_extensions
         self.index_map = []
         self.target_files = []
         self.root_dir = root_dir
@@ -101,8 +101,9 @@ class HemSelfSupDataset:
             ImageFile.LOAD_TRUNCATED_IMAGES = True
 
         for root, _, filenames in os.walk(self.root_dir):
-            for filename in fnmatch.filter(filenames, f"*.{self.file_extension}"):
-                self.target_files.append(os.path.join(root, filename))
+            for extension in self.file_extensions:
+                for filename in fnmatch.filter(filenames, f"*.{extension}"):
+                    self.target_files.append(os.path.join(root, filename))
 
         count_before = self.target_files.__len__()
         self.file_categories = {}

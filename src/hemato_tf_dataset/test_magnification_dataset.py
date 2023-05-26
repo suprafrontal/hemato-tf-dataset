@@ -1,3 +1,4 @@
+import math
 import numpy
 from hemato_tf_dataset import RBCDiameterDataGen
 
@@ -9,4 +10,4 @@ def test_RBCDiamterDataset():
     x1 = ds.get_batch(0)
     assert len(x1) == ds.batch_size
     item = ds[0]
-    assert numpy.max(item[0]) == 1.0
+    assert math.isclose(numpy.max(item[0]), 1.0)

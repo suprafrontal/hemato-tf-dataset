@@ -57,7 +57,7 @@ class RBCDiameterDataGen(tf.keras.utils.Sequence):
         shuffle=True,
         max_count=0,
         inspection_path="",
-        file_extension="jpg",
+        file_extensions=["jpg", "jpeg", "png"],
         augmentations=AVAILABLE_AUGMENTATIONS,
         cache_images_in_memory=False,
         verbose=True,
@@ -72,13 +72,14 @@ class RBCDiameterDataGen(tf.keras.utils.Sequence):
         self.image_width = image_width
         self.augmentations = augmentations
         self.shuffle = shuffle
-        self.file_extension = "jpg"
+        self.file_extensions = file_extensions
         self.yscale_factor = yscale_factor
         self.verbose = verbose
 
         for root, _, filenames in os.walk(self.root_dir):
-            for filename in fnmatch.filter(filenames, f"*.{self.file_extension}"):
-                self.target_files.append(os.path.join(root, filename))
+            for extension in self.file_extensions:
+                for filename in fnmatch.filter(filenames, f"*.{extension}"):
+                    self.target_files.append(os.path.join(root, filename))
 
         self.expected_answers = {}
         with open(f"{root_dir}/expected_answers.json") as f:

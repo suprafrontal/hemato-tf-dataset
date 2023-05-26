@@ -60,7 +60,7 @@ class CellDetectionDataset:
         shuffle=True,
         max_count=0,
         inspection_path="",
-        file_extension="jpg",
+        file_extensions=["jpg", "jpeg", "png"],
         augmentations=AVAILABLE_AUGMENTATIONS,
         cache_images_in_memory=False,
         verbose=True,
@@ -78,14 +78,15 @@ class CellDetectionDataset:
         self.image_width = image_width
         self.augmentations = augmentations
         self.shuffle = shuffle
-        self.file_extension = "jpg"
+        self.file_extensions = file_extensions
         self.yscale_factor = yscale_factor
         self.cache_images_in_memory = cache_images_in_memory
         self.verbose = verbose
 
         for root, _, filenames in os.walk(self.root_dir):
-            for filename in fnmatch.filter(filenames, f"*.{self.file_extension}"):
-                self.target_files.append(os.path.join(root, filename))
+            for extension in self.file_extensions:
+                for filename in fnmatch.filter(filenames, f"*.{extension}"):
+                    self.target_files.append(os.path.join(root, filename))
 
         self.expected_answers = {}
         with open(path_to_expected_answers_json) as f:
