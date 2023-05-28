@@ -431,6 +431,8 @@ class CellDetectionDataset:
             "identifier": f"{identifier}-{self.augmentations[aug_idx]}",
             "target_obj_file_path": trg_file,
             "target_rects": rects,
+            "aug_idx": aug_idx,
+            "augmentations": self.augmentations[aug_idx],
         }
 
         if self.cache_images_in_memory:

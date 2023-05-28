@@ -14,3 +14,9 @@ def test_HemBinaryClassificationDataset():
     assert math.isclose(numpy.max(item["img_tensor"]), 1.0)
     assert item["zero_v_one"] in [0, 1]
     assert item["hot_one"].numpy() is not None
+
+    item = ds[1]
+    assert math.isclose(numpy.max(item["img"]), 1.0)
+    assert math.isclose(numpy.max(item["img_tensor"]), 1.0)
+    assert item["zero_v_one"] in [0, 1]
+    assert item["hot_one"].numpy() is not None
