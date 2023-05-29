@@ -4,7 +4,7 @@ from hemato_tf_dataset import HemSelfSupDataset
 
 
 def test_HemSelfSupDataset():
-    ds = HemSelfSupDataset("tests/test_data", image_width=256, augmentations=[""])
+    ds = HemSelfSupDataset("tests/test_data", image_width=256, augmentations=["PLAIN_BAGEL"])
     assert ds
     assert ds.__len__() == 3
     x1 = ds.get_batch(0)
@@ -14,7 +14,7 @@ def test_HemSelfSupDataset():
 
 
 def test_batch_get():
-    ds = HemSelfSupDataset("tests/test_data", image_width=256, augmentations=[""], cache_images_in_memory=True)
+    ds = HemSelfSupDataset("tests/test_data", image_width=256, augmentations=["PLAIN_BAGEL"], cache_images_in_memory=True)
     assert ds
     assert ds.__len__() == 3
     b1 = ds.get_batch(0)

@@ -15,7 +15,7 @@ from PIL import ImageOps, ImageFilter
 from .utils import deltaT, translate_wrap
 
 AVAILABLE_AUGMENTATIONS = [
-    "",
+    "NO_AUGMENTATION_PLAIN_BAGEL",
     "gray",
     "satur25",
     "satur125",

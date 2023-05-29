@@ -4,7 +4,7 @@ from hemato_tf_dataset import RBCDiameterDataGen
 
 
 def test_RBCDiamterDataset():
-    ds = RBCDiameterDataGen("tests/magnification_test_data", image_width=256, yscale_factor=256, augmentations=[""])
+    ds = RBCDiameterDataGen("tests/magnification_test_data", image_width=256, yscale_factor=256, augmentations=["PLAIN_BAGEL"])
     assert ds != None
     # assert ds.__len__() == 4
     x1 = ds.get_batch(0)

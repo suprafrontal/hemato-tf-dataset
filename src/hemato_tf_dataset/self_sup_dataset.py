@@ -24,7 +24,7 @@ def to_grayscale_then_rgb(image):
 
 
 AVAILABLE_AUGMENTATIONS = [
-    "",
+    "NO_AUGMENTATION_PLAIN_BAGEL",
     "gray",
     "invert",
     "satur25",

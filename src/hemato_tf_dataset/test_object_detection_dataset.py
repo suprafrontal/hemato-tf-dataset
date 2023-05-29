@@ -4,7 +4,7 @@ from hemato_tf_dataset import CellDetectionDataset
 
 
 def test_CellDetectionDataset():
-    ds = CellDetectionDataset("tests/test_cell_location_data", "tests/test_cell_location_data/expected_answers.json", image_width=256, augmentations=[""])
+    ds = CellDetectionDataset("tests/test_cell_location_data", "tests/test_cell_location_data/expected_answers.json", image_width=256, augmentations=["PLAIN_BAGEL"])
     assert ds is not None
     assert ds.__len__() == 4
     x1 = ds.get_batch(0)
@@ -14,7 +14,7 @@ def test_CellDetectionDataset():
 
 
 # def test_batch_get():
-#     ds = HemSelfSupDataset("tests/test_data", image_width=256, augmentations=[""], cache_images_in_memory=True)
+#     ds = HemSelfSupDataset("tests/test_data", image_width=256, augmentations=["PLAIN_BAGEL"], cache_images_in_memory=True)
 #     assert ds
 #     assert ds.__len__() == 3
 #     b1 = ds.get_batch(0)

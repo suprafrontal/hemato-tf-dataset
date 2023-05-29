@@ -12,7 +12,7 @@ from PIL import ImageOps
 from .utils import deltaT
 
 AVAILABLE_AUGMENTATIONS = [
-    "",
+    "NO_AUGMENTATION_PLAIN_BAGEL",
     "gray",
     "satur25",
     "satur125",
