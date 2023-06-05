@@ -93,7 +93,6 @@ class HemSelfSupDataset:
         self.image_width = image_width
         self.inspection_path = inspection_path
         self.augmentations = augmentations
-        # self.enhance_for_purpule_stuff = False
         self.cache_images_in_memory = cache_images_in_memory
         self.verbose = verbose
 
@@ -191,11 +190,11 @@ class HemSelfSupDataset:
         if type(index) is int:
             ## ------ MEM CACHE
             index = index % self.__len__()
-        if self.mem_cache[index]:
-            if self.verbose:
-                deltaT(t1, "GIc")
-            return self.mem_cache[index]
-        ## ----- END MEM CACHE
+            if self.mem_cache[index]:
+                if self.verbose:
+                    deltaT(t1, "GIc")
+                return self.mem_cache[index]
+            ## ----- END MEM CACHE
         elif type(index) is slice:
             r = []
             for idx in range(index.start, index.stop or len(self), index.step or 1):

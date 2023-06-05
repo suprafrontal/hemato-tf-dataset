@@ -4,9 +4,9 @@ from hemato_tf_dataset import HemBinaryClassificationDataset
 
 
 def test_HemBinaryClassificationDataset():
-    ds = HemBinaryClassificationDataset("tests/binary_classification_test_data", image_width=256, cache_images_in_memory=True)
+    ds = HemBinaryClassificationDataset("tests/binary_classification_test_data", image_width=256, cache_images_in_memory=True, augmentations=["PLAIN_BAGEL"])
     assert ds is not None
-    assert ds.__len__() == 54
+    assert ds.__len__() == 2
     x1 = ds.get_batch(0)
     assert len(x1) == ds.batch_size
     item = ds[0]

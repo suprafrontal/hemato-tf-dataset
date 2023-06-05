@@ -193,11 +193,11 @@ class CellDetectionDataset:
         if type(index) is int:
             ## ------ MEM CACHE
             index = index % self.__len__()
-        if self.mem_cache[index]:
-            if self.verbose:
-                deltaT(t1, "GIc")
-            return self.mem_cache[index]
-        ## ----- END MEM CACHE
+            if self.mem_cache[index]:
+                if self.verbose:
+                    deltaT(t1, "GIc")
+                return self.mem_cache[index]
+            ## ----- END MEM CACHE
         elif type(index) is slice:
             r = []
             for idx in range(index.start, index.stop or len(self), index.step or 1):
