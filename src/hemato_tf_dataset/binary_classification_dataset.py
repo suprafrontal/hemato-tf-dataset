@@ -93,7 +93,6 @@ class HemBinaryClassificationDataset:
         self.image_width = image_width
         self.inspection_path = inspection_path
         self.augmentations = augmentations
-        # self.enhance_for_purpule_stuff = False
         self.cache_images_in_memory = cache_images_in_memory
         self.verbose = verbose
 
@@ -171,7 +170,6 @@ class HemBinaryClassificationDataset:
             self.index_map = numpy.random.permutation(len(self.augmentations) * min(max_count, len(self.target_files)))
 
         self.mem_cache = [None] * (len(self.augmentations) * len(self.target_files))
-
 
     def __len__(self):
         return len(self.index_map)
