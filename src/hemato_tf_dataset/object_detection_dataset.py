@@ -11,6 +11,7 @@ import time
 import PIL
 from PIL import Image
 from PIL import ImageOps, ImageFilter
+from PIL import ImageEnhance
 
 from .utils import deltaT, translate_wrap
 

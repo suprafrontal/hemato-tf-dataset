@@ -11,6 +11,7 @@ import PIL
 from PIL import ImageOps
 from PIL import ImageFile
 from PIL import ImageFilter
+from PIL import ImageEnhance
 
 from .utils import deltaT, translate_wrap
 
